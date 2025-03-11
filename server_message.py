@@ -56,7 +56,7 @@ class ServerMessage(Message):
         creates the response to the client
         :return:
         """
-        if self._request['action'] == 'query':
+        if self._request['action'] == 'QUERY':
             data = self._create_response_json_content()
         else:
             data = self._create_response_text_content()

@@ -41,7 +41,7 @@ def main():
                             f'Main: Error: Exception for {message.ipaddr}:\n'
                             f'{traceback.format_exc()}'
                         )
-                        message._close()
+                        message.close()
     except KeyboardInterrupt:
         print('Caught keyboard interrupt, exiting')
     finally:
@@ -52,24 +52,28 @@ def process_action(message, kittens):
     print(message.event)
     if message.event == 'READ':
         action = message.request['action']
-        if action == 'register':
+        if action == 'MEOW':
             service_port = kittens.register(
                 message.request['type'],
                 message.request['ip'],
                 message.request['name']
             )
             message.response = service_port
-        elif action == 'heartbeat':
+        elif action == 'SWISH':
             result = kittens.heartbeat(
                 message.request['name']
             )
             message.response = result
-        elif action == 'query':
+        elif action == 'QUERY':
             result = kittens.query(
                 message.request['type']
             )
             message.response = result
-
+        elif action == 'CATNAP':
+            kittens.unregister(
+                message.request['name']
+            )
+            message.response = 'ACK'
         message.set_selector_events_mask('w')
 
 

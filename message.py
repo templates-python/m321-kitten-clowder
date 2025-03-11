@@ -132,7 +132,7 @@ class Message:
                 if type(self).__name__ == 'ServerMessage' and \
                         sent and \
                         not self._send_buffer:
-                    self._close()
+                    self.close()
 
     def _process_protoheader(self):
         """
@@ -193,7 +193,7 @@ class Message:
         response_message = message_hdr + jsonheader_bytes + content_bytes
         return response_message
 
-    def _close(self):
+    def close(self):
         print(f'Closing connection to {self._ipaddr}')
         try:
             self._selector.unregister(self._socket)

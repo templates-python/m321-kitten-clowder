@@ -37,7 +37,7 @@ class KittenBots:
                 return 'OK'
         return 'NOT FOUND'
     
-    def query(self, service_type: str):
+    def query(self, service_type: str) -> str:
         """
         Query the kittens for all kittens of a given type.
         :param service_type:
@@ -46,7 +46,7 @@ class KittenBots:
         results = []
         for index, service in enumerate(self._bots):
             age = (datetime.now() - service['heartbeat']).total_seconds()
-            if age > 5:
+            if age > 5000:
                 self._bots.pop(index)
             elif service['service_type'] == service_type:
                 results.append(
@@ -57,3 +57,15 @@ class KittenBots:
                     }
                 )
         return str(results)
+
+    def unregister(self, name: str) -> None:
+        """
+        Unregister a service.
+        :param name:
+        :return:
+        """
+        for index, service in enumerate(self._bots):
+            if service['name'] == name:
+                self._bots.pop(index)
+                return
+        return 'NOTFOUND'
