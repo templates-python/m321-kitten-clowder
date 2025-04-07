@@ -15,6 +15,11 @@ class KittenBots:
         self._bots = []
 
     def register(self, type: str, hostaddr: str, name: str):
+        for bot in self._bots:
+            if bot['name'] == name:
+                self.heartbeat(name)
+                return bot['port']
+
         new_service = {
             'service_type': type,
             'ip': hostaddr,

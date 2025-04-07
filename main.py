@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import selectors
 import socket
 import traceback
@@ -8,7 +6,6 @@ from kitten_bots import KittenBots
 from server_message import ServerMessage
 
 
-HOST = '127.0.0.1'
 PORT = 65432
 
 
@@ -19,9 +16,9 @@ def main():
     lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Avoid bind() exception: OSError: [Errno 48] Address already in use
     lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    lsock.bind((HOST, PORT))
+    lsock.bind((get_my_ip(), PORT))
     lsock.listen()
-    print(f'Listening on {(HOST, PORT)}')
+    print(f'Listening on {(get_my_ip(), PORT)}')
     lsock.setblocking(False)
     sel.register(lsock, selectors.EVENT_READ, data=None)
 
@@ -84,6 +81,23 @@ def accept_wrapper(sel, sock):
     message = ServerMessage(sel, conn, addr)
     sel.register(conn, selectors.EVENT_READ, data=message)
 
+def get_my_ip():
+    """
+    Get the ip address of this computer
+    :return: ip-address
+    """
+    return '127.0.0.1'
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.254.254.254', 1))
+        ip_addr = s.getsockname()[0]
+    except Exception:
+        ip_addr = '127.0.0.1'
+    finally:
+        s.close()
+    return ip_addr
 
 if __name__ == '__main__':
     main()
